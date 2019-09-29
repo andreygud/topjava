@@ -83,15 +83,10 @@ public class UserMealsUtil {
                         HashMap<LocalDate, MyValueObject<Integer, List<UserMeal>>>::new,
                         (acc, meal) -> {
                             LocalDate key = meal.getDateTime().toLocalDate();
-                            MyValueObject<Integer, List<UserMeal>> valueObj = acc.get(key);
-                            if (valueObj == null) {
-                                valueObj = new MyValueObject<>(0, new ArrayList<>());
-                            }
+                            MyValueObject<Integer, List<UserMeal>> valueObj = acc.computeIfAbsent(key, (k) -> new MyValueObject<>(0, new ArrayList<>()));
 
                             valueObj.getField2().add(meal);
-                            int currentSum = valueObj.getField1();
-
-                            valueObj.setField1(currentSum + meal.getCalories());
+                            valueObj.setField1(valueObj.getField1() + meal.getCalories());
 
                             acc.put(key, valueObj);
                         },
