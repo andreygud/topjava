@@ -80,72 +80,62 @@ public class UserMealsUtil {
 
         return mealList.stream()
                 .collect(Collector.of(
-                        HashMap<LocalDate, MyValueObject<Integer, List<UserMeal>>>::new,
+                        HashMap<LocalDate, MyValueObject>::new,
                         (acc, meal) -> {
                             LocalDate key = meal.getDateTime().toLocalDate();
-                            MyValueObject<Integer, List<UserMeal>> valueObj = acc.computeIfAbsent(key, (k) -> new MyValueObject<>(0, new ArrayList<>()));
+                            MyValueObject valueObj = acc.computeIfAbsent(key, (k) -> new MyValueObject(0, new ArrayList<>()));
 
-                            valueObj.getField2().add(meal);
-                            valueObj.setField1(valueObj.getField1() + meal.getCalories());
+                            valueObj.getMealList().add(meal);
+                            valueObj.setCaloriesSummary(valueObj.getCaloriesSummary() + meal.getCalories());
 
                             acc.put(key, valueObj);
                         },
-                        (part1, part2) ->
-                        {
-                            for (Map.Entry<LocalDate, MyValueObject<Integer, List<UserMeal>>> entry : part2.entrySet()) {
-
-                                part1.merge(entry.getKey(), entry.getValue(), (v1, v2) -> {
-                                    v1.setField1(v1.getField1() + v2.getField1());
-                                    v1.getField2().addAll(v2.getField2());
-                                    return v1;
-                                });
-                            }
-                            return part1;
+                        (part1, part2) -> {
+                            throw new IllegalArgumentException("Combiner Executed on a sequential stream");
                         }
                 )).entrySet().stream()
                 .collect(Collector.of(
                         ArrayList::new,
-                        (List<UserMealWithExceed> acc, Map.Entry<LocalDate, MyValueObject<Integer, List<UserMeal>>> mapEntry) -> {
+                        (List<UserMealWithExceed> acc, Map.Entry<LocalDate, MyValueObject> mapEntry) -> {
 
-                            int caloriesSummary = mapEntry.getValue().getField1();
+                            int caloriesSummary = mapEntry.getValue().getCaloriesSummary();
 
-                            List<UserMealWithExceed> mealWithExceedList = mapEntry.getValue().getField2().stream()
+                            List<UserMealWithExceed> mealWithExceedList = mapEntry.getValue().getMealList().stream()
                                     .map(meal -> new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), caloriesSummary > caloriesPerDay))
                                     .collect(toList());
 
                             acc.addAll(mealWithExceedList);
                         }
                         , (part1, part2) -> {
-                            part1.addAll(part2);
-                            return part1;
+                            throw new IllegalArgumentException("Combiner Executed on a sequential stream");
                         })).stream()
                 .filter(item -> TimeUtil.isBetween(item.getDateTime().toLocalTime(), startTime, endTime))
                 .collect(toList());
     }
 
-    static class MyValueObject<A, B> {
-        private A field1;
-        private B field2;
+    static class MyValueObject {
+        private Integer caloriesSummary;
+        private List<UserMeal> mealList;
 
-        public MyValueObject(A field1, B field2) {
-            this.field1 = field1;
-            this.field2 = field2;
+        public MyValueObject(Integer caloriesSummary, List<UserMeal> mealList) {
+            this.caloriesSummary = caloriesSummary;
+            this.mealList = mealList;
         }
 
-        public A getField1() {
-            return field1;
+        public Integer getCaloriesSummary() {
+            return caloriesSummary;
         }
 
-        public void setField1(A field1) {
-            this.field1 = field1;
+        public void setCaloriesSummary(Integer caloriesSummary) {
+            this.caloriesSummary = caloriesSummary;
         }
 
-        public B getField2() {
-            return field2;
+        public List<UserMeal> getMealList() {
+            return mealList;
         }
 
-        public void setField2(B field2) {
-            this.field2 = field2;
+        public void setMealList(List<UserMeal> mealList) {
+            this.mealList = mealList;
         }
     }
 
