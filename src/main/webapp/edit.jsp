@@ -5,15 +5,15 @@
 <html>
 <head>
     <title>Meals</title>
-    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
 </head>
 <body>
 
-<h3><a href="../index.html">Home</a></h3>
+<h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Add/Edit Meals:</h2>
 
-<form method="POST" action='edit' id="mealUpd">
+<form method="POST" action='meals' id="mealUpd">
 
     <table>
         <tr>
@@ -22,11 +22,6 @@
         </tr>
 
         <%--@elvariable id="mealRecord" type="ru.javawebinar.topjava.model.Meal"--%>
-        <tr>
-            <td class="first_column">ID</td>
-            <td class="ro_field"><input type="text" readonly name="id" value="${mealRecord.id}"
-                                        class="ro_field input_field"/></td>
-        </tr>
         <tr>
             <td class="first_column">Description</td>
             <td><input type="text" name="description" value="${mealRecord.description}" class="input_field"/></td>

@@ -25,11 +25,6 @@ input.input_field {
 .first_column {
     background-color: lightgray;
 }
-.ro_field {
-    background-color: lightgray;
-    padding: 0;
-    border: 0 lightgray;
-}
 
 .button {
     font-size: large;

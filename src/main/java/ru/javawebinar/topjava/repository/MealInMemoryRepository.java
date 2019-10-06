@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,11 +18,13 @@ public class MealInMemoryRepository implements CrudRepository<Meal> {
 
     private static MealInMemoryRepository repository = null;
 
-    private ConcurrentMap<Long, Meal> mealsMap = new ConcurrentHashMap<>();
+    private Map<Long, Meal> mealsMap = new ConcurrentHashMap<>();
+
+    private AtomicLong id = new AtomicLong();
 
     private MealInMemoryRepository() {
         init();
-        log.debug("MealRepository initialization finished: {} ",mealsMap);
+        log.debug("MealRepository initialization finished: {} ", mealsMap);
     }
 
     synchronized public static MealInMemoryRepository getRepositoryInstance() {
@@ -59,16 +61,9 @@ public class MealInMemoryRepository implements CrudRepository<Meal> {
         return new ArrayList<>(mealsMap.values());
     }
 
-    synchronized private Long getNextID() {
-        Long nextId;
-        try {
-            nextId = Collections.max(mealsMap.keySet()) + 1L;
-        } catch (NoSuchElementException e) {
-            nextId = 1L;
-        }
-        return nextId;
+    private Long getNextID() {
+        return id.getAndIncrement();
     }
-
 
     private void init() {
         save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));

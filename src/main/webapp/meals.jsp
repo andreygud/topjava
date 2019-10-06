@@ -11,10 +11,9 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals:</h2>
-<p><a href="meals/edit?action=add" class="button">Add New Record</a></p>
+<p><a href="meals?action=add" class="button">Add New Record</a></p>
 <table>
     <tr>
-        <th>ID</th>
         <th>Description</th>
         <th>DateTime</th>
         <th>Calories</th>
@@ -23,14 +22,13 @@
     <%--@elvariable id="mealtolist" type="java.util.List"--%>
     <c:forEach var="mealto" items="${mealtolist}">
         <%--@elvariable id="mealto" type="ru.javawebinar.topjava.model.MealTo"--%>
-        <tr class="${(mealto.excess eq true)? 'red':'green'}">
-            <td>${mealto.id}</td>
+        <tr class="${mealto.excess? 'red':'green'}">
             <td>${mealto.description}</td>
             <td>${mealto.dateTime.format( DateTimeFormatter.ofPattern("dd.MM.yy hh:mm"))}</td>
             <td>${mealto.calories}</td>
             <td>
-                <a href="meals/edit?action=edit&id=${mealto.id}">Edit</a>
-                <a href="meals/edit?action=delete&id=${mealto.id}">Delete</a>
+                <a href="meals?action=edit&id=${mealto.id}">Edit</a>
+                <a href="meals?action=delete&id=${mealto.id}">Delete</a>
             </td>
         </tr>
     </c:forEach>
