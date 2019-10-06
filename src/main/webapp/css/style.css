@@ -1,5 +1,9 @@
 .red {
-    color: red
+    color: red;
+}
+
+.green {
+    color: green;
 }
 
 table, th, td {
@@ -9,6 +13,24 @@ table, th, td {
 }
 
 th {
-    width: 130px;
     background-color: lightblue;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+input.input_field {
+    width: 100%;
+}
+
+.first_column {
+    background-color: lightgray;
+}
+.ro_field {
+    background-color: lightgray;
+    padding: 0;
+    border: 0 lightgray;
+}
+
+.button {
+    font-size: large;
 }
