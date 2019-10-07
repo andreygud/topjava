@@ -35,6 +35,8 @@
             <td><input type="text" name="calories" value="${mealRecord.calories}" class="input_field"/></td>
         </tr>
     </table>
+    <input type="hidden" name="id" value="${mealRecord.id}" />
+
     <br/>
     <input type="submit" value="Submit"/>
 
