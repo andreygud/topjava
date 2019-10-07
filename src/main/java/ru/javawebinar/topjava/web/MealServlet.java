@@ -25,15 +25,16 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action = request.getParameter("action") == null ? "" : request.getParameter("action");
+        String action = request.getParameter("action");
         String id = request.getParameter("id");
 
         log.debug("input parameters action {} id {}", action, id);
 
+        String notNullAction = (action == null)? "":action;
 
-        switch (action) {
+        switch (notNullAction) {
             case "edit":
-                Meal meal = repositoryInstance.findByID(Long.decode(id));
+                Meal meal = repositoryInstance.findByID(Long.parseLong(id));
                 request.setAttribute("mealRecord", meal);
                 request.getRequestDispatcher("/edit.jsp").forward(request, response);
                 break;
@@ -41,7 +42,7 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/edit.jsp").forward(request, response);
                 break;
             case "delete":
-                repositoryInstance.deleteByID(Long.decode(id));
+                repositoryInstance.deleteByID(Long.parseLong(id));
                 response.sendRedirect(request.getContextPath() + "/meals");
                 break;
             default:
@@ -58,25 +59,19 @@ public class MealServlet extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        String id = req.getParameter("id") == null ? "" : req.getParameter("id");
+        String id = req.getParameter("id");
         String description = req.getParameter("description");
         String datetime = req.getParameter("datetime");
         String calories = req.getParameter("calories");
 
         log.debug("String {} {} {} {}", id, description, datetime, calories);
 
-        Meal mealRecord;
-        if (!"".equals(id)) {
-            mealRecord = repositoryInstance.findByID(Long.decode(id));
-            if (mealRecord == null) {
-                mealRecord = new Meal();
-            }
-        } else {
-            mealRecord = new Meal();
-        }
+        Meal mealRecord = new Meal();
 
+        if (id != null && !"".equals(id))
+            mealRecord.setId(Long.parseLong(id));
         mealRecord.setDateTime(LocalDateTime.parse(datetime));
-        mealRecord.setCalories(Integer.decode(calories));
+        mealRecord.setCalories(Integer.parseInt(calories));
         mealRecord.setDescription(description);
 
         repositoryInstance.save(mealRecord);
