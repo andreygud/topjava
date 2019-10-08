@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Meal implements GenericObject {
+public class Meal extends GenericObject {
 
-    private Long id;
     private LocalDateTime dateTime;
     private String description;
     private int calories;
@@ -18,14 +17,6 @@ public class Meal implements GenericObject {
     }
 
     public Meal() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {

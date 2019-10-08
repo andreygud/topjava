@@ -1,9 +1,15 @@
 package ru.javawebinar.topjava.model;
 
-public interface GenericObject {
+abstract public class GenericObject {
 
-    Long getId();
+    private Long id;
 
-    void setId(Long id);
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 }
