@@ -12,4 +12,10 @@ abstract public class GenericObject {
         this.id = id;
     }
 
+    public boolean isNew(){
+        if (id == null)
+            return true;
+        return false;
+    }
+
 }

@@ -37,7 +37,7 @@ public class MealInMemoryRepository implements CrudRepository<Meal> {
     public Meal save(Meal object) {
         if (object == null) throw new IllegalArgumentException("object cannot be null");
 
-        if (object.getId() == null) {
+        if (object.isNew()) {
             object.setId(getNextID());
         }
         mealsMap.put(object.getId(), object);
