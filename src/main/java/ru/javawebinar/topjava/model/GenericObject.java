@@ -13,8 +13,9 @@ abstract public class GenericObject {
     }
 
     public boolean isNew(){
-        if (id == null)
+        if (id == null) {
             return true;
+        }
         return false;
     }
 

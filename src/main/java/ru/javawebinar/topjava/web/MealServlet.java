@@ -68,8 +68,9 @@ public class MealServlet extends HttpServlet {
 
         Meal mealRecord = new Meal();
 
-        if (id != null && !"".equals(id))
+        if (id != null && !"".equals(id)) {
             mealRecord.setId(Long.parseLong(id));
+        }
         mealRecord.setDateTime(LocalDateTime.parse(datetime));
         mealRecord.setCalories(Integer.parseInt(calories));
         mealRecord.setDescription(description);
