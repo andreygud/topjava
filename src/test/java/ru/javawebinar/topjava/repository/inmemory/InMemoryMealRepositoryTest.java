@@ -32,13 +32,11 @@ class InMemoryMealRepositoryTest {
                 new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 12, 0), "Обед", 510, 2),
                 new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 20, 0), "Ужин", 510, 2)
         );
-
         mealsWithUserID.forEach(mealRepository::save);
     }
 
     @Test
     void save() {
-
         //New case
         int countBefore = mealRepository.getAll().size();
         Meal meal1 = new Meal(LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин", 510, 1);

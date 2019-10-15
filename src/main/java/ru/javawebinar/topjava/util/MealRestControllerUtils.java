@@ -2,9 +2,11 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class MealToValidationUtils {
+public class MealRestControllerUtils {
     public static void validateCaloriesIsManadatory(MealTo mealTo) {
         if (mealTo.getCalories() == 0) {
             throw new IllegalArgumentException("Calories should be specified");
@@ -29,4 +31,22 @@ public class MealToValidationUtils {
         if (mealTo.getId() != null)
             throw new IllegalArgumentException(mealTo + " must be new ");
     }
+
+    public static LocalTime parseTimeBoundary(String startDate, LocalTime boundary) {
+
+        if (startDate == null || "".equals(startDate)) {
+            return boundary;
+        }
+        return LocalTime.parse(startDate);
+    }
+
+    public static LocalDate parseDateBoundary(String startDate, LocalDate boundary) {
+
+        if (startDate == null || "".equals(startDate)) {
+            return boundary;
+        }
+        return LocalDate.parse(startDate);
+    }
+
+
 }

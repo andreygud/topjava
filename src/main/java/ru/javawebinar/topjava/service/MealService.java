@@ -10,7 +10,11 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.*;
 
@@ -50,4 +54,13 @@ public class MealService {
         return repository.getAllByUserId(userId);
     }
 
+    public Map<LocalDate, Integer> getCaloriesSumByDate(int userId) {
+        log.debug("getCaloriesSumByDate user={}", userId);
+        return repository.getCaloriesSumByDate(userId);
+    }
+
+    public List<Meal> getAllByTimeBoundaries(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.debug("getAllByTimeBoundaries user {} startDate {} endDate {} startTime {} endTime {}", userId, startDate, endDate, startTime, endTime);
+        return repository.getAllByTimeBoundaries(userId, startDate, endDate, startTime, endTime);
+    }
 }
