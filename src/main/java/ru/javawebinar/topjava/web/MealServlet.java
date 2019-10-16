@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -15,7 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -48,17 +52,17 @@ public class MealServlet extends HttpServlet {
 
         Integer normalizedId = id.isEmpty() ? null : Integer.valueOf(id);
 
-        MealTo mealTo = new MealTo(
+        Meal meal = new Meal(
                 normalizedId,
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")), false
+                Integer.parseInt(request.getParameter("calories"))
         );
 
         if (normalizedId == null) {
-            mealRestController.create(mealTo);
+            mealRestController.create(meal);
         } else {
-            mealRestController.update(mealTo, normalizedId);
+            mealRestController.update(meal, normalizedId);
         }
 
         response.sendRedirect("meals");
@@ -77,21 +81,27 @@ public class MealServlet extends HttpServlet {
                 break;
             case "create":
             case "update":
-                final MealTo mealTo = "create".equals(action) ?
-                        mealRestController.getDefaultMealTo() : mealRestController.get(getId(request));
-                request.setAttribute("mealTo", mealTo);
+                final Meal meal = "create".equals(action) ?
+                        getDefaultMealFrom() : mealRestController.get(getId(request));
+                request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filtered":
+                log.info("getfiltered");
+                request.setAttribute("meals",
+                        mealRestController.getAllByTimeBoundaries(
+                                parseDateBoundary(request.getParameter("dateStart"), LocalDate.MIN),
+                                parseDateBoundary(request.getParameter("dateEnd"), LocalDate.MAX),
+                                parseTimeBoundary(request.getParameter("timeStart"), LocalTime.MIN),
+                                parseTimeBoundary(request.getParameter("timeEnd"), LocalTime.MAX)
+                        ));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        mealRestController.getAllByTimeBoundaries(
-                                request.getParameter("dateStart"),
-                                request.getParameter("dateEnd"),
-                                request.getParameter("timeStart"),
-                                request.getParameter("timeEnd")
-                        ));
+                        mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -101,4 +111,28 @@ public class MealServlet extends HttpServlet {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
     }
+
+    private Meal getDefaultMealFrom() {
+        log.debug("getDefaultMealTo");
+
+        return new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, 0);
+    }
+
+    private static LocalTime parseTimeBoundary(String startTime, LocalTime boundary) {
+
+        if (startTime == null || "".equals(startTime)) {
+            return boundary;
+        }
+        return LocalTime.parse(startTime);
+    }
+
+    private static LocalDate parseDateBoundary(String startDate, LocalDate boundary) {
+
+        if (startDate == null || "".equals(startDate)) {
+            return boundary;
+        }
+        return LocalDate.parse(startDate);
+    }
+
+
 }

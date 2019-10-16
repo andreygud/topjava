@@ -22,8 +22,8 @@
     <hr/>
     <h2>Meals</h2>
     <form method="get" action="meals" id="filterForm">
+        <input type="text" value="filtered" name="action" hidden>
         <table>
-
             <tr>
                 <th></th>
                 <th>Start</th>
@@ -42,7 +42,10 @@
         </table>
         <br/>
         <button type="submit">Filter</button>
-        <button type="button" onclick="document.getElementById('1').value='';document.getElementById('2').value='';document.getElementById('3').value='';document.getElementById('4').value='';">Reset</button>
+        <button type="button"
+                onclick="document.getElementById('1').value='';document.getElementById('2').value='';document.getElementById('3').value='';document.getElementById('4').value='';">
+            Reset
+        </button>
     </form>
     <a href="meals?action=create">Add Meal</a>
     <br/>

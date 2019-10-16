@@ -50,10 +50,4 @@ public class MealsUtil {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
-    public static List<MealTo> convertMealIntoMealTo(List<Meal> meals, Map<LocalDate, Integer> caloriesSumByDate, int caloriesPerDay) {
-
-        return meals.stream()
-                .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
-                .collect(Collectors.toList());
-    }
 }

@@ -11,7 +11,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -49,18 +49,13 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public List<Meal> getAllByAuthUser(int userId) {
+    public Collection<Meal> getAllByAuthUser(int userId) {
         log.debug("GetAll meals user={}", userId);
         return repository.getAllByUserId(userId);
     }
 
-    public Map<LocalDate, Integer> getCaloriesSumByDate(int userId) {
-        log.debug("getCaloriesSumByDate user={}", userId);
-        return repository.getCaloriesSumByDate(userId);
-    }
-
-    public List<Meal> getAllByTimeBoundaries(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        log.debug("getAllByTimeBoundaries user {} startDate {} endDate {} startTime {} endTime {}", userId, startDate, endDate, startTime, endTime);
-        return repository.getAllByTimeBoundaries(userId, startDate, endDate, startTime, endTime);
+    public Collection<Meal> getAllByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        log.debug("getAllByTimeBoundaries user {} startDate {} endDate {}", userId, startDate, endDate);
+        return repository.getAllByDate(userId, startDate, endDate);
     }
 }

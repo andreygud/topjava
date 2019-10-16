@@ -38,10 +38,10 @@ class InMemoryMealRepositoryTest {
     @Test
     void save() {
         //New case
-        int countBefore = mealRepository.getAll().size();
+        int countBefore = mealRepository.getAllByUserId(1).size();
         Meal meal1 = new Meal(LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин", 510, 1);
         Meal meal1Saved = mealRepository.save(meal1);
-        int countAfter = mealRepository.getAll().size();
+        int countAfter = mealRepository.getAllByUserId(1).size();
         assertNotNull(meal1Saved);
         assertEquals(countBefore + 1, countAfter);
 
@@ -57,12 +57,12 @@ class InMemoryMealRepositoryTest {
         //try to save with not registered
         Meal mealNotExistingID = new Meal(1000, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин-Changed", 510, 1);
         assertNull(mealRepository.save(mealNotExistingID));
-        assertEquals(countAfter, mealRepository.getAll().size());
+        assertEquals(countAfter, mealRepository.getAllByUserId(1).size());
 
         //try to save when owner and users are different
         Meal existingMealDifferentUserID = new Meal(2, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "All-Changed", 510, 2);
         assertNull(mealRepository.save(existingMealDifferentUserID));
-        assertEquals(countAfter, mealRepository.getAll().size());
+        assertEquals(countAfter, mealRepository.getAllByUserId(1).size());
 
 
     }
@@ -70,10 +70,10 @@ class InMemoryMealRepositoryTest {
     @Test
     void delete() {
         assertTrue(mealRepository.delete(6, 2));
-        assertEquals(5, mealRepository.getAll().size());
+        assertEquals(5, mealRepository.getAllByUserId(1).size());
 
         assertTrue(mealRepository.delete(2, SecurityUtil.authUserId()));
-        assertEquals(4, mealRepository.getAll().size());
+        assertEquals(4, mealRepository.getAllByUserId(1).size());
     }
 
     @Test
@@ -94,7 +94,7 @@ class InMemoryMealRepositoryTest {
                 LocalDateTime.of(2018, Month.APRIL, 15, 12, 0).toString(),
                 LocalDateTime.of(2018, Month.APRIL, 15, 8, 0).toString()
         );
-        List<String> getAllResultNullAndUser = mealRepository.getAll().stream().map(meal -> meal.getDateTime().toString()).collect(Collectors.toList());
+        List<String> getAllResultNullAndUser = mealRepository.getAllByUserId(1).stream().map(meal -> meal.getDateTime().toString()).collect(Collectors.toList());
 
         assertLinesMatch(datesResultNullAndUser, getAllResultNullAndUser);
 

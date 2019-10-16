@@ -45,48 +45,5 @@ class MealRestControllerTest {
                 null,
                 null).size());
 
-        //get by Time - both boundaries specified
-        assertEquals(2, mealRestController.getAllByTimeBoundaries(
-                null,
-                null,
-                "11:00",
-                "13:00").size());
-
-        //get by Time - one boundari specified - start
-        //get by Time - one boundari specified - end
-
-
-        //get by Date - both boundaries specified
-        assertEquals(2, mealRestController.getAllByTimeBoundaries(
-                "2018-04-01",
-                "2018-04-01",
-                "",
-                "").size());
-
-        //get by Date - one boundari specified - start
-        //get by Date - one boundari specified - end
-
-        //get by Date and Time - all fields specified
-        assertEquals(3, mealRestController.getAllByTimeBoundaries(
-                "2018-04-02",
-                "2018-04-05",
-                "11:00",
-                "15:00").size());
-
-
-        //try to pass Date Time in inverted order
-        assertEquals(0, mealRestController.getAllByTimeBoundaries(
-                "2018-04-05",
-                "2018-04-02",
-                "15:00",
-                "11:00").size());
-
-
-        //specify wrong value in the Date/Time fields
-        assertThrows(DateTimeParseException.class, () -> mealRestController.getAllByTimeBoundaries(
-                "2AA018-04-05",
-                null,
-                null,
-                null));
     }
 }
