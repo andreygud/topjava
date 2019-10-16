@@ -6,15 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.*;
 
@@ -29,19 +24,19 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(Meal meal) {
+    public Meal create(Meal meal,int userId) {
         log.debug("Create a meal {}", meal);
-        return repository.save(meal);
+        return repository.save(meal,userId );
     }
 
-    public void update(Meal meal) throws NotFoundException {
+    public void update(Meal meal, int userID) throws NotFoundException {
         log.debug("Update a meal {}", meal);
-        checkNotFoundWithId(repository.save(meal), meal.getId());
+        checkNotFoundWithId(repository.save(meal, userID), meal.getId());
     }
 
-    public void delete(int id, int userID) throws NotFoundException {
+    public void delete(int id, int userId) throws NotFoundException {
         log.debug("Delete a meal {}", id);
-        checkNotFoundWithId(repository.delete(id, userID), id);
+        checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
     public Meal get(int id, int userId) throws NotFoundException {
@@ -49,12 +44,12 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public Collection<Meal> getAllByAuthUser(int userId) {
+    public List<Meal> getAllByAuthUser(int userId) {
         log.debug("GetAll meals user={}", userId);
-        return repository.getAllByUserId(userId);
+        return repository.getAll(userId);
     }
 
-    public Collection<Meal> getAllByDate(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getAllByDate(int userId, LocalDate startDate, LocalDate endDate) {
         log.debug("getAllByTimeBoundaries user {} startDate {} endDate {}", userId, startDate, endDate);
         return repository.getAllByDate(userId, startDate, endDate);
     }

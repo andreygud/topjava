@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.MealServlet;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -22,9 +21,9 @@ class MealServiceTest {
     void setUp() {
         InMemoryMealRepository mealRepository = new InMemoryMealRepository();
         List<Meal> mealsWithUserID = Arrays.asList(
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 20, 0), "Ужин", 510, 2)
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 20, 0), "Ужин", 510)
         );
-        mealsWithUserID.forEach(mealRepository::save);
+        mealsWithUserID.forEach(meal -> mealRepository.save(meal, 2));
         mealService = new MealService(mealRepository);
     }
 
@@ -32,8 +31,8 @@ class MealServiceTest {
     void update() {
         //check that user cannot update records he doesn't own
         assertNotNull(mealService.get(1, 2));
-        Meal meal = new Meal(1, LocalDateTime.of(2030, Month.MAY, 15, 20, 0), "Lunch", 1200, 1);
-        assertThrows(NotFoundException.class, () -> mealService.update(meal));
+        Meal meal = new Meal(1, LocalDateTime.of(2030, Month.MAY, 15, 20, 0), "Lunch", 1200);
+        assertThrows(NotFoundException.class, () -> mealService.update(meal, 1));
     }
 
     @Test

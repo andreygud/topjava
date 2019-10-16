@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,13 +21,13 @@ class MealRestControllerTest {
     void setUp() {
         InMemoryMealRepository mealRepository = new InMemoryMealRepository();
         List<Meal> mealsWithUserID = Arrays.asList(
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 1, 9, 0), "Ужин", 510, 1),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 2, 11, 0), "Ужин", 510, 1),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 3, 13, 0), "Ужин", 510, 1),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 4, 15, 0), "Ужин", 510, 1),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 1, 17, 0), "Ужин", 510, 1)
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 1, 9, 0), "Ужин", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 2, 11, 0), "Ужин", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 3, 13, 0), "Ужин", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 4, 15, 0), "Ужин", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 1, 17, 0), "Ужин", 510)
         );
-        mealsWithUserID.forEach(mealRepository::save);
+        mealsWithUserID.forEach(meal -> mealRepository.save(meal, 1));
         MealService mealService = new MealService(mealRepository);
         mealRestController = new MealRestController(mealService);
 

@@ -6,7 +6,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -22,6 +21,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.*;
+
 public class MealServlet extends HttpServlet {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -31,12 +32,12 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
 
         MealRepository mealRepository = appCtx.getBean(MealRepository.class);
-        MealsUtil.MEALS.forEach(mealRepository::save);
+        MealsUtil.MEALS1.forEach(meal -> mealRepository.save(meal, 1));
+        MealsUtil.MEALS2.forEach(meal -> mealRepository.save(meal, 2));
     }
 
     @Override
@@ -87,13 +88,12 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filtered":
-                log.info("getfiltered");
                 request.setAttribute("meals",
                         mealRestController.getAllByTimeBoundaries(
-                                parseDateBoundary(request.getParameter("dateStart"), LocalDate.MIN),
-                                parseDateBoundary(request.getParameter("dateEnd"), LocalDate.MAX),
-                                parseTimeBoundary(request.getParameter("timeStart"), LocalTime.MIN),
-                                parseTimeBoundary(request.getParameter("timeEnd"), LocalTime.MAX)
+                                parseDate(request.getParameter("dateStart")),
+                                parseDate(request.getParameter("dateEnd")),
+                                parseTime(request.getParameter("timeStart")),
+                                parseTime(request.getParameter("timeEnd"))
                         ));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
@@ -115,24 +115,21 @@ public class MealServlet extends HttpServlet {
     private Meal getDefaultMealFrom() {
         log.debug("getDefaultMealTo");
 
-        return new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, 0);
+        return new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
     }
 
-    private static LocalTime parseTimeBoundary(String startTime, LocalTime boundary) {
-
-        if (startTime == null || "".equals(startTime)) {
-            return boundary;
+    private LocalDate  parseDate( String str){
+        if(str == null || "".equals(str)){
+            return null;
+        }else{
+            return LocalDate.parse(str);
         }
-        return LocalTime.parse(startTime);
     }
-
-    private static LocalDate parseDateBoundary(String startDate, LocalDate boundary) {
-
-        if (startDate == null || "".equals(startDate)) {
-            return boundary;
+    private LocalTime  parseTime(String str){
+        if(str == null || "".equals(str)){
+            return null;
+        }else{
+            return LocalTime.parse(str);
         }
-        return LocalDate.parse(startDate);
     }
-
-
 }

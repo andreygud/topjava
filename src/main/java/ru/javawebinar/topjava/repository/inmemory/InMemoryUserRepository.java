@@ -52,13 +52,13 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
 
-    //return the first User with the specified email, if many sorted by name
+    //return the first User with the specified email
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return userRepository.values().stream()
                 .filter(x -> x.getEmail().equals(email))
-                .min(Comparator.comparing(User::getName).thenComparing(User::getId)) //equivalent to sorted().getFirst
+                .findFirst()
                 .orElse(null); //.get may result in NoSuchElementException user orElse
     }
 }

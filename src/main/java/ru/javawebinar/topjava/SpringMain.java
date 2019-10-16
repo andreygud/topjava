@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -22,7 +23,7 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             MealRepository mealRepository = appCtx.getBean(MealRepository.class);
 
-            MealsUtil.MEALS.forEach(mealRepository::save);
+            MealsUtil.MEALS1.forEach(meal -> mealRepository.save(meal, SecurityUtil.authUserId()));
 
             System.out.println(mealRestController.getAll());
         }

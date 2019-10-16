@@ -39,4 +39,11 @@ public class ValidationUtil {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
         }
     }
+
+    public static <T> T elvisOp(T nullable, T sub) {
+        if (nullable == null) {
+            return sub;
+        } else
+            return nullable;
+    }
 }

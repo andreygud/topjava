@@ -7,9 +7,7 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,44 +23,48 @@ class InMemoryMealRepositoryTest {
         mealRepository = new InMemoryMealRepository();
 
         List<Meal> mealsWithUserID = Arrays.asList(
-                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 9, 0), "Завтрак", 500, 1),
-                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 13, 0), "Обед", 510, 1),
-                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 20, 0), "Ужин", 510, 1),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 8, 0), "Завтрак", 510, 2),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 12, 0), "Обед", 510, 2),
-                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 20, 0), "Ужин", 510, 2)
+                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 9, 0), "Завтрак", 500),
+                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 13, 0), "Обед", 510),
+                new Meal(LocalDateTime.of(2019, Month.MAY, 31, 20, 0), "Ужин", 510)
         );
-        mealsWithUserID.forEach(mealRepository::save);
+
+        mealsWithUserID.forEach(meal -> mealRepository.save(meal, 1));
+        List<Meal> mealsWithUserID2 = Arrays.asList(
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 8, 0), "Завтрак", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 12, 0), "Обед", 510),
+                new Meal(LocalDateTime.of(2018, Month.APRIL, 15, 20, 0), "Ужин", 510)
+        );
+        mealsWithUserID2.forEach(meal -> mealRepository.save(meal, 2));
     }
 
     @Test
     void save() {
         //New case
-        int countBefore = mealRepository.getAllByUserId(1).size();
-        Meal meal1 = new Meal(LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин", 510, 1);
-        Meal meal1Saved = mealRepository.save(meal1);
-        int countAfter = mealRepository.getAllByUserId(1).size();
+        int countBefore = mealRepository.getAll(1).size();
+        Meal meal1 = new Meal(LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин", 510);
+        Meal meal1Saved = mealRepository.save(meal1, 1);
+        int countAfter = mealRepository.getAll(1).size();
         assertNotNull(meal1Saved);
         assertEquals(countBefore + 1, countAfter);
 
         //change parameters
-        Meal meal1Changed = new Meal(meal1Saved.getId(), LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин-Changed", 510, 1);
+        Meal meal1Changed = new Meal(meal1Saved.getId(), LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин-Changed", 510);
 
-        Meal meal1ChangedSaved = mealRepository.save(meal1Changed);
+        Meal meal1ChangedSaved = mealRepository.save(meal1Changed, 1);
         assertNotNull(meal1ChangedSaved);
 
         Meal meal1ChangedSavedExtracted = mealRepository.get(meal1Saved.getId(), SecurityUtil.authUserId());
         assertEquals("Ужин-Changed", meal1ChangedSavedExtracted.getDescription());
 
         //try to save with not registered
-        Meal mealNotExistingID = new Meal(1000, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин-Changed", 510, 1);
-        assertNull(mealRepository.save(mealNotExistingID));
-        assertEquals(countAfter, mealRepository.getAllByUserId(1).size());
+        Meal mealNotExistingID = new Meal(1000, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "Ужин-Changed", 510);
+        assertNull(mealRepository.save(mealNotExistingID, 1));
+        assertEquals(countAfter, mealRepository.getAll(1).size());
 
         //try to save when owner and users are different
-        Meal existingMealDifferentUserID = new Meal(2, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "All-Changed", 510, 2);
-        assertNull(mealRepository.save(existingMealDifferentUserID));
-        assertEquals(countAfter, mealRepository.getAllByUserId(1).size());
+        Meal existingMealDifferentUserID = new Meal(2, LocalDateTime.of(2017, Month.JUNE, 15, 20, 0), "All-Changed", 510);
+        assertNull(mealRepository.save(existingMealDifferentUserID, 2));
+        assertEquals(countAfter, mealRepository.getAll(1).size());
 
 
     }
@@ -70,10 +72,8 @@ class InMemoryMealRepositoryTest {
     @Test
     void delete() {
         assertTrue(mealRepository.delete(6, 2));
-        assertEquals(5, mealRepository.getAllByUserId(1).size());
 
         assertTrue(mealRepository.delete(2, SecurityUtil.authUserId()));
-        assertEquals(4, mealRepository.getAllByUserId(1).size());
     }
 
     @Test
@@ -89,12 +89,9 @@ class InMemoryMealRepositoryTest {
         List<String> datesResultNullAndUser = Arrays.asList(
                 LocalDateTime.of(2019, Month.MAY, 31, 20, 0).toString(),
                 LocalDateTime.of(2019, Month.MAY, 31, 13, 0).toString(),
-                LocalDateTime.of(2019, Month.MAY, 31, 9, 0).toString(),
-                LocalDateTime.of(2018, Month.APRIL, 15, 20, 0).toString(),
-                LocalDateTime.of(2018, Month.APRIL, 15, 12, 0).toString(),
-                LocalDateTime.of(2018, Month.APRIL, 15, 8, 0).toString()
+                LocalDateTime.of(2019, Month.MAY, 31, 9, 0).toString()
         );
-        List<String> getAllResultNullAndUser = mealRepository.getAllByUserId(1).stream().map(meal -> meal.getDateTime().toString()).collect(Collectors.toList());
+        List<String> getAllResultNullAndUser = mealRepository.getAll(1).stream().map(meal -> meal.getDateTime().toString()).collect(Collectors.toList());
 
         assertLinesMatch(datesResultNullAndUser, getAllResultNullAndUser);
 

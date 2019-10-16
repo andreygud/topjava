@@ -42,7 +42,7 @@
         </table>
         <br/>
         <button type="submit">Filter</button>
-        <button type="button"
+        <button type="submit"
                 onclick="document.getElementById('1').value='';document.getElementById('2').value='';document.getElementById('3').value='';document.getElementById('4').value='';">
             Reset
         </button>
