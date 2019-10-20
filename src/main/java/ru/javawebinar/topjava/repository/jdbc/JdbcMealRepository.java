@@ -63,11 +63,11 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("select id, dateTime, description, calories from user_meals where user_id = ? ORDER BY datetime desc", ROW_MAPPER, userId);
+        return jdbcTemplate.query("select id, dateTime, description, calories from user_meals where user_id = ? order by datetime desc", ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return jdbcTemplate.query("select * from user_meals where datetime between ? and ? and user_id = ? ORDER BY datetime desc", ROW_MAPPER,startDate,endDate, userId);
+        return jdbcTemplate.query("select * from user_meals where datetime between ? and ? and user_id = ? order by datetime desc", ROW_MAPPER,startDate,endDate, userId);
     }
 }

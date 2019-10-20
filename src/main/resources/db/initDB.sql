@@ -33,5 +33,7 @@ CREATE TABLE user_meals
     description varchar,
     calories    INTEGER,
     user_id     INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE --I solemnly swear that I want to clean everything after user removal
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE --I solemnly swear that I want to clean everything after user removal. I accept the risk of dropping precious user data in case of users mismanagement.
 );
+
+CREATE UNIQUE INDEX user_meals_datetime_idx ON user_meals (user_id, dateTime); --make it unique within a single user
