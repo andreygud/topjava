@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.MealsTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -34,14 +34,10 @@ public class MealServiceTest {
     @Autowired
     private MealService mealService;
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @Test
     public void get_mealByOwner_success() {
         Meal mealRetrieved = mealService.get(MEAL_OF_USER.getId(), USER_ID);
-        checkMealsAreEqual(mealRetrieved, MEAL_OF_USER);
+        MealsTestData.assertEqual(mealRetrieved, MEAL_OF_USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -53,7 +49,7 @@ public class MealServiceTest {
     public void delete_byOwner_success() {
         mealService.delete(MEAL_OF_USER.getId(), USER_ID);
         List<Meal> afterDelete = mealService.getAll(USER_ID);
-        checkMealListsMatch(afterDelete, MEALS_OF_USER_AFTER_DELETE);
+        MealsTestData.assertMatch(afterDelete, MEALS_OF_USER_AFTER_DELETE);
     }
 
     @Test(expected = NotFoundException.class)
@@ -64,20 +60,20 @@ public class MealServiceTest {
     @Test
     public void update_byOwner_success() {
         Meal meal = new Meal(MEAL_OF_USER);
-        meal.setDateTime(LocalDateTime.parse("2019-10-20T22:00"));
+        meal.setDateTime(LocalDateTime.of(2019,10,20,22,0));
         meal.setCalories(2000);
         meal.setDescription("After Lunch");
 
         mealService.update(meal, USER_ID);
         Meal updated = mealService.get(MEAL_OF_USER.getId(), USER_ID);
 
-        checkMealsAreEqual(updated, meal);
+        MealsTestData.assertEqual(updated, meal);
     }
 
     @Test(expected = NotFoundException.class)
     public void update_byOther_fail() {
         Meal meal = new Meal(MEAL_OF_USER);
-        meal.setDateTime(LocalDateTime.parse("2019-10-20T22:00"));
+        meal.setDateTime(LocalDateTime.of(2019,10,20,22,0));
         meal.setCalories(2000);
         meal.setDescription("After Lunch");
 
@@ -92,8 +88,8 @@ public class MealServiceTest {
         Meal createdMeal = mealService.create(meal, USER_ID);
         List<Meal> afterCreate = mealService.getAll(USER_ID);
 
-        checkMealsAreEqual(createdMeal, MEAL_OF_USER_CREATED);
-        checkMealListsMatch(afterCreate, MEALS_OF_USER_AFTER_CREATE);
+        MealsTestData.assertEqual(createdMeal, MEAL_OF_USER_CREATED);
+        MealsTestData.assertMatch(afterCreate, MEALS_OF_USER_AFTER_CREATE);
     }
 
     @Test(expected = DuplicateKeyException.class)
@@ -111,42 +107,42 @@ public class MealServiceTest {
         mealService.create(meal, ADMIN_ID);
         List<Meal> afterCreate = mealService.getAll(ADMIN_ID);
 
-        checkMealListsMatch(afterCreate, MEALS_OF_ADMIN_AFTER_CREATE);
+        MealsTestData.assertMatch(afterCreate, MEALS_OF_ADMIN_AFTER_CREATE);
     }
 
     @Test
     public void getAll_byOwner_sortedList() {
         List<Meal> meals = mealService.getAll(USER_ID);
-        checkMealListsMatch(meals, MEALS_OF_USER_ALL);
+        MealsTestData.assertMatch(meals, MEALS_OF_USER_ALL);
     }
 
     @Test
     public void getAll_byOther_sortedList() {
         List<Meal> meals = mealService.getAll(ADMIN_ID);
-        checkMealListsMatch(meals, MEALS_OF_ADMIN_ALL);
+        MealsTestData.assertMatch(meals, MEALS_OF_ADMIN_ALL);
     }
 
     @Test
     public void getBetween_byOwnerByDates_sortedList() {
-        List<Meal> meals = mealService.getBetweenDates(LocalDate.parse("2019-10-23"), LocalDate.parse("2019-10-24"), USER_ID);
-        checkMealListsMatch(meals, MEALS_OF_USER_FOR_DATES);
+        List<Meal> meals = mealService.getBetweenDates(LocalDate.of(2019,10,23), LocalDate.of(2019,10,24), USER_ID);
+        MealsTestData.assertMatch(meals, MEALS_OF_USER_FOR_DATES);
     }
 
     @Test
     public void getBetween_byOwnerByDate_onerecord() {
-        List<Meal> meals = mealService.getBetweenDates(LocalDate.parse("2019-10-24"), LocalDate.parse("2019-10-24"), USER_ID);
-        checkMealListsMatch(meals, Arrays.asList(MEAL_OF_USER5));
+        List<Meal> meals = mealService.getBetweenDates(LocalDate.of(2019,10,24), LocalDate.of(2019,10,24), USER_ID);
+        MealsTestData.assertMatch(meals, Arrays.asList(MEAL_OF_USER5));
     }
 
     @Test
-    public void getBetween_byOwnerDatesNull_sortedList_all() {
+    public void getBetween_byOwnerDatesNull_sortedList() {
         List<Meal> meals = mealService.getBetweenDates(null, null, USER_ID);
-        checkMealListsMatch(meals, MEALS_OF_USER_ALL);
+        MealsTestData.assertMatch(meals, MEALS_OF_USER_ALL);
     }
 
     @Test
     public void getBetween_byOtherDatesNull_sortedList() {
         List<Meal> meals = mealService.getBetweenDates(null, null, ADMIN_ID);
-        checkMealListsMatch(meals, MEALS_OF_ADMIN_ALL);
+        MealsTestData.assertMatch(meals, MEALS_OF_ADMIN_ALL);
     }
 }

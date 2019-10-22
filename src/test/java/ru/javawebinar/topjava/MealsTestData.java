@@ -13,18 +13,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealsTestData {
-    public static final Meal MEAL_OF_USER = new Meal(100002, LocalDateTime.parse("2015-05-30T10:00:00"), "Завтрак", 500);
-    public static final Meal MEAL_OF_USER1 = new Meal(100003, LocalDateTime.parse("2015-05-30T13:00:00"), "Обед", 1000);
-    public static final Meal MEAL_OF_USER2 = new Meal(100004, LocalDateTime.parse("2015-05-30T20:00:00"), "Ужин", 500);
-    public static final Meal MEAL_OF_USER3 = new Meal(100005, LocalDateTime.parse("2019-10-23T09:00:00"), "Завтрак", 500);
-    public static final Meal MEAL_OF_USER4 = new Meal(100006, LocalDateTime.parse("2019-10-23T12:00:00"), "Обед", 1500);
-    public static final Meal MEAL_OF_USER5 = new Meal(100007, LocalDateTime.parse("2019-10-24T09:00:00"), "Завтрак", 1500);
-    public static final Meal MEAL_OF_USER_CREATED = new Meal(100011, LocalDateTime.parse("2019-10-10T10:12"), "Завтрак", 500);
+    public static final Meal MEAL_OF_USER = new Meal(100002, LocalDateTime.of(2015,5,30,10,0), "Завтрак", 500);
+    public static final Meal MEAL_OF_USER1 = new Meal(100003, LocalDateTime.of(2015,5,30,13,0), "Обед", 1000);
+    public static final Meal MEAL_OF_USER2 = new Meal(100004, LocalDateTime.of(2015,5,30,20,0), "Ужин", 500);
+    public static final Meal MEAL_OF_USER3 = new Meal(100005, LocalDateTime.of(2019,10,23,9,0), "Завтрак", 500);
+    public static final Meal MEAL_OF_USER4 = new Meal(100006, LocalDateTime.of(2019,10,23,12,0), "Обед", 1500);
+    public static final Meal MEAL_OF_USER5 = new Meal(100007, LocalDateTime.of(2019,10,24,9,0), "Завтрак", 1500);
+    public static final Meal MEAL_OF_USER_CREATED = new Meal(100011, LocalDateTime.of(2019,10,10,10,12), "Завтрак", 500);
 
-    public static final Meal MEAL_OF_ADMIN = new Meal(100008, LocalDateTime.parse("2015-05-31T10:00"), "Завтрак", 1000);
-    public static final Meal MEAL_OF_ADMIN1 = new Meal(100009, LocalDateTime.parse("2015-05-31T13:00"), "Обед", 500);
-    public static final Meal MEAL_OF_ADMIN2 = new Meal(100010, LocalDateTime.parse("2015-05-31T20:00"), "Ужин", 510);
-    public static final Meal MEAL_OF_ADMIN_AFTER_CREATE = new Meal(100011, LocalDateTime.parse("2015-05-30T10:00:00"), "Завтрак", 500);
+    public static final Meal MEAL_OF_ADMIN = new Meal(100008, LocalDateTime.of(2015,5,31,10,0), "Завтрак", 1000);
+    public static final Meal MEAL_OF_ADMIN1 = new Meal(100009, LocalDateTime.of(2015,5,31,13,0), "Обед", 500);
+    public static final Meal MEAL_OF_ADMIN2 = new Meal(100010, LocalDateTime.of(2015,5,31,20,0), "Ужин", 510);
+    public static final Meal MEAL_OF_ADMIN_AFTER_CREATE = new Meal(100011, LocalDateTime.of(2015,5,30,10,0), "Завтрак", 500);
 
     public static final List<Meal> MEALS_OF_USER_ALL = Arrays.asList(
             MEAL_OF_USER5,
@@ -70,11 +70,11 @@ public class MealsTestData {
     );
 
 
-    public static void checkMealListsMatch(List<Meal> actual, List<Meal> expected) {
+    public static void assertMatch(List<Meal> actual, List<Meal> expected) {
         Assertions.assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
     }
 
-    public static void checkMealsAreEqual(Meal actual, Meal expected) {
+    public static void assertEqual(Meal actual, Meal expected) {
         assertThat(actual).isEqualToComparingFieldByField(expected);
     }
 }
