@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS user_meals;
+DROP TABLE IF EXISTS meals;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS global_seq;
@@ -26,14 +26,14 @@ CREATE TABLE user_roles
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE user_meals
+CREATE TABLE meals
 (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    dateTime    TIMESTAMP,
+    datetime    TIMESTAMP,
     description varchar,
     calories    INTEGER,
     user_id     INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE --I solemnly swear that I want to clean everything after user removal. I accept the risk of dropping precious user data in case of users mismanagement.
 );
 
-CREATE UNIQUE INDEX user_meals_datetime_idx ON user_meals (user_id, dateTime); --make it unique within a single user
+CREATE UNIQUE INDEX meals_datetime_idx ON meals (user_id, datetime); --make it unique within a single user
