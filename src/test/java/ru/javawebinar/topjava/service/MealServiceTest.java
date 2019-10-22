@@ -144,7 +144,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getBetween_byOtherDatesNull_listsDontMatch() {
+    public void getBetween_byOtherDatesNull_sortedList() {
         List<Meal> meals = mealService.getBetweenDates(null, null, ADMIN_ID);
         checkMealListsMatch(meals, MEALS_OF_ADMIN_ALL);
     }
