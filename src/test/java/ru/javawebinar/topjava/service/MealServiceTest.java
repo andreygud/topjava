@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.MealsTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -37,7 +35,7 @@ public class MealServiceTest {
     @Test
     public void get_mealByOwner_success() {
         Meal mealRetrieved = mealService.get(MEAL_OF_USER.getId(), USER_ID);
-        MealsTestData.assertEqual(mealRetrieved, MEAL_OF_USER);
+        MealsTestData.assertMatch(mealRetrieved, MEAL_OF_USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -67,7 +65,7 @@ public class MealServiceTest {
         mealService.update(meal, USER_ID);
         Meal updated = mealService.get(MEAL_OF_USER.getId(), USER_ID);
 
-        MealsTestData.assertEqual(updated, meal);
+        MealsTestData.assertMatch(updated, meal);
     }
 
     @Test(expected = NotFoundException.class)
@@ -88,7 +86,7 @@ public class MealServiceTest {
         Meal createdMeal = mealService.create(meal, USER_ID);
         List<Meal> afterCreate = mealService.getAll(USER_ID);
 
-        MealsTestData.assertEqual(createdMeal, MEAL_OF_USER_CREATED);
+        MealsTestData.assertMatch(createdMeal, MEAL_OF_USER_CREATED);
         MealsTestData.assertMatch(afterCreate, MEALS_OF_USER_AFTER_CREATE);
     }
 

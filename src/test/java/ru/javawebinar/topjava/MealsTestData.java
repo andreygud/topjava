@@ -2,15 +2,12 @@ package ru.javawebinar.topjava;
 
 import org.assertj.core.api.Assertions;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealsTestData {
     public static final Meal MEAL_OF_USER = new Meal(100002, LocalDateTime.of(2015,5,30,10,0), "Завтрак", 500);
@@ -74,7 +71,7 @@ public class MealsTestData {
         Assertions.assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
     }
 
-    public static void assertEqual(Meal actual, Meal expected) {
+    public static void assertMatch(Meal actual, Meal expected) {
         assertThat(actual).isEqualToComparingFieldByField(expected);
     }
 }
