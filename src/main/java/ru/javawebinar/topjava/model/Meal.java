@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "delete from Meal m where m.id = :id and m.user.id = :user_id"),
         @NamedQuery(name = Meal.GET, query = "select m from Meal m where m.id = :id and m.user.id = :user_id"),
-        @NamedQuery(name = Meal.GET_BETWEEN, query = "select m from Meal m where m.dateTime >= :startDate and m.dateTime <= :endDate and m.user.id = :user_id order by m.dateTime desc"), //user <=/>= instead of between
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "select m from Meal m where m.dateTime >= :startDate and m.dateTime <= :endDate and m.user.id = :user_id order by m.dateTime desc"), //use <=/>= instead of between
         @NamedQuery(name = Meal.GET_ALL, query = "select m from Meal m where m.user.id = :user_id order by m.dateTime desc")
 })
 public class Meal extends AbstractBaseEntity {

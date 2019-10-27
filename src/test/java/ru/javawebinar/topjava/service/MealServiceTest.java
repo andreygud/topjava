@@ -34,7 +34,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
     private static String watchedLog = "\n\nTest Execution Summary: \n";
 
