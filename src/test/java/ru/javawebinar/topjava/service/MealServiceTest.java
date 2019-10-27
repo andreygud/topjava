@@ -1,15 +1,24 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.*;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.sound.midi.Soundbank;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -25,11 +34,58 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
+
+    private static String watchedLog = "\n\nTest Execution Summary: \n";
+
+    private TestWatcher watchman = new TestWatcher() {
+        private long startTime;
+        private long endTime;
+
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+            super.starting(description);
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+
+            String output = "Execution time, ms: " + executionTime + " - " + description.getMethodName();
+
+            watchedLog += output + "\n";
+            log.debug(output, e);
+        }
+
+        @Override
+        protected void succeeded(Description description) {
+            endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+
+            String output = "Execution time, ms: " + executionTime + " - " + description.getMethodName();
+
+            watchedLog += output + "\n";
+            log.debug(output);
+        }
+    };
+    private TestName testName = new TestName();
+    private ExpectedException exceptionChecker = ExpectedException.none();
+
+    @Rule
+    public final TestRule chain = RuleChain.outerRule(watchman).around(testName).around(exceptionChecker);
+
     @Autowired
     private MealService service;
 
+    @AfterClass
+    public static void printResults() {
+        log.debug(watchedLog);
+    }
+
     @Test
-    public void delete() throws Exception {
+    public void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
@@ -39,8 +95,10 @@ public class MealServiceTest {
         service.delete(1, USER_ID);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotOwn() throws Exception {
+    @Test //(expected = NotFoundException.class)
+    public void deleteNotOwn() {
+        exceptionChecker.expect(NotFoundException.class);
+        exceptionChecker.reportMissingExceptionWithMessage(testName.getMethodName() + " method is expected to throw NotFoundException");
         service.delete(MEAL1_ID, ADMIN_ID);
     }
 
@@ -59,13 +117,17 @@ public class MealServiceTest {
         assertMatch(actual, ADMIN_MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getNotFound() throws Exception {
+    @Test//(expected = NotFoundException.class)
+    public void getNotFound() {
+        exceptionChecker.expect(NotFoundException.class);
+        exceptionChecker.reportMissingExceptionWithMessage(testName.getMethodName() + " method is expected to throw NotFoundException");
         service.get(1, USER_ID);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getNotOwn() throws Exception {
+    @Test//(expected = NotFoundException.class)
+    public void getNotOwn() {
+        exceptionChecker.expect(NotFoundException.class);
+        exceptionChecker.reportMissingExceptionWithMessage(testName.getMethodName() + " method is expected to throw NotFoundException");
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
@@ -76,8 +138,10 @@ public class MealServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void updateNotFound() throws Exception {
+    @Test//(expected = NotFoundException.class)
+    public void updateNotFound() {
+        exceptionChecker.expect(NotFoundException.class);
+        exceptionChecker.reportMissingExceptionWithMessage(testName.getMethodName() + " method is expected to throw NotFoundException");
         service.update(MEAL1, ADMIN_ID);
     }
 
@@ -87,7 +151,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getBetween() throws Exception {
+    public void getBetween() {
         assertMatch(service.getBetweenDates(
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30), USER_ID), MEAL3, MEAL2, MEAL1);
