@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -21,19 +23,21 @@ public class Meal extends AbstractBaseEntity {
     public static final String GET_ALL = "Meal.getAll";
 
     @NotNull
-    @Column(name = "date_time")
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
     @NotBlank
-    @Column(name = "description")
+    @Column(name = "description" , nullable = false)
+    @Length(max = 256)
     private String description;
 
-    @NotNull
-    @Column(name = "calories")
+    @Column(name = "calories" , nullable = false)
+    @Max(6000)
     private int calories;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public Meal() {
