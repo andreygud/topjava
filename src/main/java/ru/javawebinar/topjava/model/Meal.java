@@ -28,11 +28,12 @@ public class Meal extends AbstractBaseEntity {
 
     @NotBlank
     @Column(name = "description" , nullable = false)
-    @Length(max = 256)
+    @Length(min = 2, max = 120)
     private String description;
 
     @Column(name = "calories" , nullable = false)
-    @Max(6000)
+    @Min(10)
+    @Max(5000)
     private int calories;
 
     @NotNull
