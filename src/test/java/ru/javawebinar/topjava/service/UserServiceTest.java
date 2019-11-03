@@ -25,7 +25,8 @@ import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.UserTestData.assertMatch;
 
 
-public abstract class UserServiceTest {
+public abstract class UserServiceTest extends ServiceTest {
+
     @Autowired
     private UserService service;
     @Autowired

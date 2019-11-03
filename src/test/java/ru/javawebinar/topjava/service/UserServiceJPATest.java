@@ -7,6 +7,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 
 
 @ContextConfiguration({
@@ -14,7 +15,7 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
         "classpath:spring/spring-db.xml"
 })
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
+@ActiveProfiles(Profiles.JPA)
 @RunWith(SpringRunner.class)
 public class UserServiceJPATest extends UserServiceTest {
 }

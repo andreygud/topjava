@@ -8,6 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -15,6 +16,6 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class MealServiceJPATest extends MealServiceTest{
+@ActiveProfiles(Profiles.JPA)
+public class MealServiceJPATest extends MealServiceTest {
 }
