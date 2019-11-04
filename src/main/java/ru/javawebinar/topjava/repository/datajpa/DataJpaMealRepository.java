@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
@@ -14,7 +13,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.getEndExclusive;
 import static ru.javawebinar.topjava.util.DateTimeUtil.getStartInclusive;
 
 
-@Transactional(readOnly = true)
 @Repository
 public class DataJpaMealRepository implements MealRepository {
 
@@ -28,7 +26,6 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Transactional
-    @Modifying
     @Override
     public Meal save(Meal meal, int userId) {
         if (!meal.isNew() && (crudRepository.get(meal.getId(), userId) == null)) {
@@ -39,8 +36,6 @@ public class DataJpaMealRepository implements MealRepository {
         return crudRepository.save(meal);
     }
 
-    @Transactional
-    @Modifying
     @Override
     public boolean delete(int id, int userId) {
         return crudRepository.delete(id, userId) > 0;

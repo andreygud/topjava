@@ -8,11 +8,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -90,5 +88,5 @@ public abstract class JdbcMealRepository implements MealRepository {
                 ROW_MAPPER, userId, specificDateTimeFormat(getStartInclusive(startDate)), specificDateTimeFormat(getEndExclusive(endDate)));
     }
 
-    protected abstract <T extends Object> T specificDateTimeFormat(LocalDateTime dateTime);
+    protected abstract <T> T specificDateTimeFormat(LocalDateTime dateTime);
 }
