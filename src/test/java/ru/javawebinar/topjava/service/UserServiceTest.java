@@ -83,6 +83,6 @@ public abstract class UserServiceTest extends ServiceTest {
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
-        assertMatch(all, ADMIN, USER);
+        assertMatch(all, ADMIN, USER, USER_EMPTYMEAL);
     }
 }
