@@ -21,6 +21,7 @@ public class UserServiceDataJpaTest extends UserServiceTest {
         User user = service.getWithMeals(UserTestData.USER_ID);
         List<Meal> meals = user.getMeals();
 
+        UserTestData.assertMatch(user,UserTestData.USER);
         MealTestData.assertMatch(meals, MealTestData.MEALS);
     }
 
@@ -29,6 +30,7 @@ public class UserServiceDataJpaTest extends UserServiceTest {
         User user = service.getWithMeals(UserTestData.USER_EMPTYMEAL_ID);
         List<Meal> meals = user.getMeals();
 
+        UserTestData.assertMatch(user,UserTestData.USER_EMPTYMEAL);
         assertEquals(meals.size(), 0);
     }
 }
