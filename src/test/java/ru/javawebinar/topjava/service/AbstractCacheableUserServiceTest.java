@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import ru.javawebinar.topjava.repository.JpaUtil;
 
-public class AbstractCacheableUserServiceTest extends AbstractUserServiceTest {
+public abstract class AbstractCacheableUserServiceTest extends AbstractUserServiceTest {
     @Autowired
     protected JpaUtil jpaUtil;
     @Autowired
     private CacheManager cacheManager;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         cacheManager.getCache("users").clear();
         jpaUtil.clear2ndLevelHibernateCache();
     }
