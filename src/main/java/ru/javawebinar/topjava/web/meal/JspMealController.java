@@ -48,7 +48,7 @@ public class JspMealController extends AbstractMealController {
     @GetMapping(value = "meals/createForm")
     public String createForm(Model model) {
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
-        model.addAttribute("formHeader", "Create meal");
+        model.addAttribute("isHeaderCreate", true);
         model.addAttribute("action","create");
         return "mealForm";
     }
@@ -57,7 +57,7 @@ public class JspMealController extends AbstractMealController {
     public String updateForm(Model model, @PathVariable int id) {
         final Meal meal = get(id);
         model.addAttribute("meal", meal);
-        model.addAttribute("formHeader", "Edit meal");
+        model.addAttribute("isHeaderCreate", false);
         model.addAttribute("action","update/"+id);
         return "mealForm";
     }
