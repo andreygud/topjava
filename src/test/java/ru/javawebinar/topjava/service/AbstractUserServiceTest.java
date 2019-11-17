@@ -31,6 +31,16 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(service.get(newId), newUser);
     }
 
+    @Test
+    public void create_admin() throws Exception {
+        User newUser = getNewAdmin();
+        User created = service.create(newUser);
+        Integer newId = created.getId();
+        newUser.setId(newId);
+        assertMatch(created, newUser);
+        assertMatch(service.get(newId), newUser);
+    }
+
     @Test(expected = DataAccessException.class)
     public void duplicateMailCreate() throws Exception {
         service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
@@ -53,6 +63,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(user, USER);
     }
 
+    @Test
+    public void get_admin() throws Exception {
+        User user = service.get(ADMIN_ID);
+        assertMatch(user, ADMIN);
+    }
+
     @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
         service.get(1);
@@ -69,6 +85,22 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = getUpdated();
         service.update(updated);
         assertMatch(service.get(USER_ID), updated);
+    }
+
+    @Test
+    public void update_admin_toOneRole() throws Exception {
+        User updated = getUpdatedAdmin();
+        updated.setRoles(Set.of(Role.ROLE_USER));
+        service.update(updated);
+        assertMatch(service.get(ADMIN_ID), updated);
+    }
+
+    @Test
+    public void update_admin_toNullRole() throws Exception {
+        User updated = getUpdatedAdmin();
+        updated.setRoles(null);
+        service.update(updated);
+        assertMatch(service.get(ADMIN_ID), updated);
     }
 
     @Test
