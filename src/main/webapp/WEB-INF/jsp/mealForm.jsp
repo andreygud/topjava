@@ -12,8 +12,8 @@
     <c:set var="root" value="${pageContext.request.contextPath}"/>
     <h3><a href="${root}"><spring:message code="app.home"/></a></h3>
     <hr>
-    <h2><spring:message code="${isHeaderCreate? 'updateform.createheader':'updateform.updateheader'}"/> </h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    <h2><spring:message code="${meal.isNew()? 'updateform.createheader':'updateform.updateheader'}"/> </h2>
     <form method="post" action="${root}/meals/${action}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

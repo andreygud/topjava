@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -17,52 +16,56 @@ import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.exception.ResultSetSQLException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Repository
 public class JdbcUserRepository implements UserRepository {
-
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     private static final ResultSetExtractor<List<User>> USER_RS_EXTRACTOR = new ResultSetExtractor<List<User>>() {
 
         @Override
         public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
 
-            Map<Integer, User> userMap = new HashMap<>();
-            List<User> userList = new ArrayList<>();
+            LinkedHashMap<Integer, User> userMap = new LinkedHashMap<>();
 
             while (rs.next()) {
                 User user = userMap.computeIfAbsent(rs.getInt("id"), k -> {
-                            User u = new User();
-                            u.setId(k);
-                            userList.add(u);
-                            return u;
+                            try {
+                                User u = new User();
+                                u.setId(k);
+                                u.setName(rs.getString("name"));
+                                u.setEmail(rs.getString("email"));
+                                u.setPassword(rs.getString("password"));
+                                u.setRegistered(rs.getDate("registered"));
+                                u.setEnabled(rs.getBoolean("enabled"));
+                                u.setCaloriesPerDay(rs.getInt("calories_per_day"));
+                                return u;
+                            } catch (SQLException e) {
+                                throw new ResultSetSQLException(e);
+                            }
                         }
                 );
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setRegistered(rs.getDate("registered"));
-                user.setEnabled(rs.getBoolean("enabled"));
-                user.setCaloriesPerDay(rs.getInt("calories_per_day"));
 
                 String role = rs.getString("role");
                 if (role != null) {
                     if (user.getRoles() == null) {
-                        user.setRoles(new HashSet<>());
+                        user.setRoles(EnumSet.noneOf(Role.class));
                     }
                     user.getRoles().add(Role.valueOf(role));
                 } else {
-                    user.setRoles(new HashSet<>()); //initialize User with empty collection - for comparison
+                    user.setRoles(EnumSet.noneOf(Role.class)); //initialize User with empty collection - for comparison
                 }
             }
 
-            return userList;
+            return new ArrayList<>(userMap.values());
         }
     };
 
@@ -99,15 +102,16 @@ public class JdbcUserRepository implements UserRepository {
                     "UPDATE users SET name=:name, email=:email, password=:password, " +
                             "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource);
 
-            namedParameterJdbcTemplate.update(
-                    "delete from user_roles WHERE user_id=:id", parameterSource);
-
             if (updatedUserRows == 0) {
                 return null;
             }
+
+            namedParameterJdbcTemplate.update(
+                    "delete from user_roles WHERE user_id=:id", parameterSource);
+
         }
 
-        if(!CollectionUtils.isEmpty(user.getRoles())) { //needed for hsqldb, as hsqldb doesnt handle empty arrays
+        if (!CollectionUtils.isEmpty(user.getRoles())) { //needed for hsqldb, as hsqldb doesnt handle empty arrays
             SqlParameterSource[] array = user.getRoles().stream()
                     .map(role -> new MapSqlParameterSource()
                             .addValue("user_id", user.getId())
