@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -29,6 +30,8 @@ import java.util.List;
 @Repository
 public class JdbcUserRepository implements UserRepository {
 
+    private static final BeanPropertyRowMapper<User> USER_ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+
     private static final ResultSetExtractor<List<User>> USER_RS_EXTRACTOR = new ResultSetExtractor<List<User>>() {
 
         @Override
@@ -39,15 +42,7 @@ public class JdbcUserRepository implements UserRepository {
             while (rs.next()) {
                 User user = userMap.computeIfAbsent(rs.getInt("id"), k -> {
                             try {
-                                User u = new User();
-                                u.setId(k);
-                                u.setName(rs.getString("name"));
-                                u.setEmail(rs.getString("email"));
-                                u.setPassword(rs.getString("password"));
-                                u.setRegistered(rs.getDate("registered"));
-                                u.setEnabled(rs.getBoolean("enabled"));
-                                u.setCaloriesPerDay(rs.getInt("calories_per_day"));
-                                return u;
+                                return USER_ROW_MAPPER.mapRow(rs, 0);
                             } catch (SQLException e) {
                                 throw new ResultSetSQLException(e);
                             }
