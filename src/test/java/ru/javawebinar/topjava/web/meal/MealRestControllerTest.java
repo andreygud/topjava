@@ -90,6 +90,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(TEST_URL_BASE + MEAL1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(mealService.get(MEAL1_ID,SecurityUtil.authUserId()), updated);
     }
