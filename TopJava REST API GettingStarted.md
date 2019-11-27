@@ -1,13 +1,12 @@
-#Getting Started
+# Getting Started
 
-##Overview
+## Overview
 
 This system provides you a capability to journal what and when you eat. It also helps you track the amount of calories 
 you consume a day. 
 
-Along with Web UI to manage records this system provides you a REST API to manage you records. It consist of the two main 
-parts:
-* User API - which is primarily requred for admins to manage users that have access to the system.
+Along with the Web UI to manage records, this system provides you a REST API. It consist of two main parts:
+* User API - which is primarily required for admins to manage users that have access to the system.
 * Meals API - it gives you access to the individual user meal journals.
 
 Please find below the usage examples:  
