@@ -30,23 +30,23 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/filter")
-    public List<MealTo> getBetween(@RequestParam(required = false) /*@CustomDateTimeFormat*/ LocalDate startDate,
-                                   @RequestParam(required = false) /*@CustomDateTimeFormat*/ LocalTime startTime,
-                                   @RequestParam(required = false) /*@CustomDateTimeFormat*/ LocalDate endDate,
-                                   @RequestParam(required = false) /*@CustomDateTimeFormat*/ LocalTime endTime) {
+    public List<MealTo> getBetween(@RequestParam(required = false) LocalDate startDate,
+                                   @RequestParam(required = false) LocalTime startTime,
+                                   @RequestParam(required = false) LocalDate endDate,
+                                   @RequestParam(required = false) LocalTime endTime) {
 
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id){
+    public void delete(@PathVariable int id) {
         super.delete(id);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE )
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal){
+    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
         Meal created = super.create(meal);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -56,7 +56,7 @@ public class MealRestController extends AbstractMealController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Meal meal, @PathVariable int id){
-        super.update(meal,id);
+    public void update(@RequestBody Meal meal, @PathVariable int id) {
+        super.update(meal, id);
     }
 }

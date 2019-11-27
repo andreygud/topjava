@@ -50,7 +50,7 @@ public class MealTestData {
     }
 
     public static ResultMatcher contentJson(List<MealTo> expected) {
-        return result -> assertThat(readListFromJsonMvcResult(result,MealTo.class)).usingFieldByFieldElementComparator().isEqualTo(expected);
+        return result -> assertThat(readListFromJsonMvcResult(result,MealTo.class)).isEqualTo(expected);
     }
 
     public static ResultMatcher contentJson(Meal expected) {

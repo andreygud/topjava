@@ -44,7 +44,7 @@ class RootControllerTest extends AbstractControllerTest {
                         new AssertionMatcher<List<MealTo>>() {
                             @Override
                             public void assertion(List<MealTo> actual) throws AssertionError {
-                                assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(MealsUtil.getTos(MEALS, SecurityUtil.authUserCaloriesPerDay()));
+                                assertThat(actual).isEqualTo(MealsUtil.getTos(MEALS, SecurityUtil.authUserCaloriesPerDay()));
                             }
                         })
                 );
