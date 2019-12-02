@@ -13,26 +13,35 @@
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
 
-        <form method="get" action="meals/filter">
-            <dl>
-                <dt><spring:message code="meal.startDate"/>:</dt>
-                <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
-            </dl>
-            <dl>
-                <dt><spring:message code="meal.endDate"/>:</dt>
-                <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
-            </dl>
-            <dl>
-                <dt><spring:message code="meal.startTime"/>:</dt>
-                <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
-            </dl>
-            <dl>
-                <dt><spring:message code="meal.endTime"/>:</dt>
-                <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
-            </dl>
-            <button type="submit"><spring:message code="meal.filter"/></button>
-        </form>
-
+        <div>
+            <form id="filterform">
+                <dl>
+                    <dt><spring:message code="meal.startDate"/>:</dt>
+                    <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+                </dl>
+                <dl>
+                    <dt><spring:message code="meal.endDate"/>:</dt>
+                    <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+                </dl>
+                <dl>
+                    <dt><spring:message code="meal.startTime"/>:</dt>
+                    <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+                </dl>
+                <dl>
+                    <dt><spring:message code="meal.endTime"/>:</dt>
+                    <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+                </dl>
+                <%--            <button type="btn" onclick="filter()"><spring:message code="meal.filter"/></button>--%>
+            </form>
+            <button type="button" class="btn btn-primary btn-sm mb-2 " onclick="filter()">
+                <span class="fa"></span>
+                <spring:message code="meal.filter"/>
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="clearFilter()">
+                <span class="fa"></span>
+                <spring:message code="meal.clear"/>
+            </button>
+        </div>
 
         <button class="btn btn-primary mb-2" onclick="add()">
             <span class="fa fa-plus"></span>
@@ -50,7 +59,7 @@
             </thead>
             <c:forEach items="${meals}" var="meal">
                 <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr data-mealExcess="${meal.excess}">
+                <tr data-mealExcess="${meal.excess}" id="${meal.id}">
                     <td>
                             <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                             <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -61,7 +70,7 @@
                     <td>${meal.calories}</td>
                     <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
                     <td>
-                        <button type="button" class="btn btn-outline-danger" onclick="deleteRow(${meal.id})">
+                        <button type="button" class="btn btn-outline-danger delete">
                             <spring:message code="common.delete"/>
                         </button>
                     </td>

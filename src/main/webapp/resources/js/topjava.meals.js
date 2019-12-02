@@ -34,3 +34,26 @@ $(function () {
         }
     );
 });
+
+
+function filter() {
+    filterform = $("#filterform")
+
+    $.ajax({
+        type: "GET",
+        url: context.ajaxUrl + "filter",
+        data: filterform.serialize()
+    }).done(function (data) {
+        context.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered");
+    });
+}
+
+function clearFilter() {
+    $("#filterform").get(0).reset();
+    filter();
+}
+
+function updateTable() {
+    filter()
+}

@@ -37,4 +37,17 @@ public class AdminUIController extends AbstractUserController {
             super.create(user);
         }
     }
+
+    @Override
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public User get(@PathVariable int id) {
+        return super.get(id);
+    }
+
+    @Override
+    @PostMapping (value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody User user, @PathVariable int id) {
+        super.update(user,id);
+    }
 }
