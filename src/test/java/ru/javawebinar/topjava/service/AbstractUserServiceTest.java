@@ -94,9 +94,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void flipStatus() throws Exception {
-        boolean before = service.get(USER_ID).isEnabled();
-        service.flipStatus(USER_ID);
-        boolean after = service.get(USER_ID).isEnabled();
-        assertEquals(after, !before);
+        boolean targetTrue = true;
+        service.flipStatus(USER_ID,targetTrue);
+        boolean afterTrue = service.get(USER_ID).isEnabled();
+        assertEquals(afterTrue, targetTrue);
+
+        boolean targetFalse = false;
+        service.flipStatus(USER_ID,targetFalse);
+        boolean afterFalse = service.get(USER_ID).isEnabled();
+        assertEquals(afterFalse, targetFalse);
     }
 }

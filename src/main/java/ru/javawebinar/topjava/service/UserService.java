@@ -61,9 +61,9 @@ public class UserService {
 
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
-    public boolean flipStatus(int id) {
+    public boolean flipStatus(int id, boolean targetState) {
         User user = checkNotFoundWithId(repository.get(id), id);
-        user.setEnabled(!user.isEnabled());
+        user.setEnabled(targetState);
         repository.save(user);
         return user.isEnabled();
     }

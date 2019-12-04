@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,19 +46,10 @@ public class AdminUIController extends AbstractUserController {
         return super.get(id);
     }
 
-    @Override
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable int id) {
-        super.update(user, id);
-    }
-
     @PostMapping(value = "/{id}/flip", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map> flipStatus(@PathVariable int id) {
-        log.info("flipStatus with id={}", id);
-        Map result = new HashMap();
-
-        result.put("result", service.flipStatus(id));
+    public ResponseEntity<Map<String, Boolean>> flipStatus(@RequestParam boolean targetState, @PathVariable int id) {
+        log.info("flipStatus with id={} target state={}", id, targetState);
+        Map<String, Boolean> result = Map.of("result", service.flipStatus(id, targetState));
         return ResponseEntity.ok(result);
     }
 
