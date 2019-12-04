@@ -2,11 +2,14 @@ package ru.javawebinar.topjava.web.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ajax/admin/users")
@@ -45,9 +48,20 @@ public class AdminUIController extends AbstractUserController {
     }
 
     @Override
-    @PostMapping (value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody User user, @PathVariable int id) {
-        super.update(user,id);
+        super.update(user, id);
     }
+
+    @PostMapping(value = "/{id}/flip", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map> flipStatus(@PathVariable int id) {
+        log.info("flipStatus with id={}", id);
+        Map result = new HashMap();
+
+        result.put("result", service.flipStatus(id));
+        return ResponseEntity.ok(result);
+    }
+
+
 }

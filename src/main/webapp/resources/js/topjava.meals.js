@@ -3,7 +3,7 @@ $(function () {
     makeEditable({
             ajaxUrl: "ajax/meals/",
             datatableApi: $("#meals_datatable").DataTable({
-                "paging": true,
+                "paging": false,
                 "info": true,
                 "columns": [
                     {
@@ -27,7 +27,7 @@ $(function () {
                 "order": [
                     [
                         0,
-                        "asc"
+                        "desc"
                     ]
                 ]
             })
@@ -44,7 +44,7 @@ function filter() {
         url: context.ajaxUrl + "filter",
         data: filterform.serialize()
     }).done(function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
+        refreshTable(data)
         successNoty("Filtered");
     });
 }

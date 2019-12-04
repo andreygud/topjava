@@ -49,7 +49,6 @@ public class UserService {
         return repository.getAll();
     }
 
-    @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
@@ -58,5 +57,14 @@ public class UserService {
 
     public User getWithMeals(int id) {
         return checkNotFoundWithId(repository.getWithMeals(id), id);
+    }
+
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    public boolean flipStatus(int id) {
+        User user = checkNotFoundWithId(repository.get(id), id);
+        user.setEnabled(!user.isEnabled());
+        repository.save(user);
+        return user.isEnabled();
     }
 }
