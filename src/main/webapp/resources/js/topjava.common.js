@@ -94,3 +94,12 @@ function renderDeleteBtn(data, type, row) {
         return "<a onclick='deleteRow(" + row.id + ");'><span class='fa fa-remove'></span></a>";
     }
 }
+
+function getLocale(){
+    var lang = navigator.language
+    if(supportedLang.includes(lang)) {
+        return 'resources/i18n/'+lang+'.json'
+    }else {
+        return 'resources/i18n/en-US.json'
+    }
+}

@@ -20,6 +20,9 @@ $(function () {
     makeEditable({
             ajaxUrl: userAjaxUrl,
             datatableApi: $("#datatable").DataTable({
+                "language": {
+                    "url": `${getLocale()}`
+                },
                 "ajax": {
                     "url": userAjaxUrl,
                     "dataSrc": ""
