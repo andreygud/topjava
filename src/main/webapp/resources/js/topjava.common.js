@@ -9,6 +9,21 @@ function makeEditable(ctx) {
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
+
+    $(".date-input").datetimepicker({
+        timepicker:false,
+        format:'Y-m-d',
+    });
+
+    $(".time-input").datetimepicker({
+        datepicker:false,
+        format:'H:i',
+    });
+
+    $(".datetime-input").datetimepicker({
+        format:'Y-m-d H:i'
+    });
+
 }
 
 function add() {
