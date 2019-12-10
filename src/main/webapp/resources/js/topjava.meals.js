@@ -71,6 +71,7 @@ function save() {
         type: "POST",
         url: context.ajaxUrl,
         data: {
+            id:$("#id").val(),
             dateTime: getDateTime(),
             description: $("#description").val(),
             calories: $("#calories").val()
@@ -87,6 +88,6 @@ function getDateTime() {
     if (dateField.val() === "") {
         return ""
     } else {
-        return dateField.datetimepicker('getValue').toISOString().substr(0, 16)
+        return dateField.val().replace(' ','T')
     }
 }

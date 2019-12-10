@@ -10,18 +10,72 @@ function makeEditable(ctx) {
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
 
-    $(".date-input").datetimepicker({
-        timepicker:false,
-        format:'Y-m-d',
+    $("#startDate").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        onShow: function () {
+            this.setOptions({
+                maxDate: $('#endDate').val() ? $('#endDate').val() : false,
+                minDate: false
+            })
+        },
+        onSelectDate: function () {
+            if ($('#startDate').val() === $('#endDate').val()) {
+                $("#endTime").datetimepicker('reset');
+            }
+        }
     });
 
-    $(".time-input").datetimepicker({
-        datepicker:false,
-        format:'H:i',
+    $("#endDate").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        onShow: function () {
+            this.setOptions({
+                minDate: $('#startDate').val() ? $('#startDate').val() : false,
+                maxDate: false
+            })
+        },
+        onSelectDate: function () {
+            if ($('#startDate').val() === $('#endDate').val()) {
+                $("#endTime").datetimepicker('reset');
+            }
+        }
+    });
+
+    $("#startTime").datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onShow: function () {
+            if ($('#startDate').val() === $('#endDate').val()) {
+                this.setOptions({
+                    maxTime: $('#endTime').val() ? $('#endTime').val() : false
+                })
+            } else {
+                this.setOptions({
+                    maxTime: false
+                })
+            }
+        }
+    });
+
+    $("#endTime").datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onShow: function () {
+            if ($('#startDate').val() === $('#endDate').val()) {
+                this.setOptions({
+                    minTime: $('#startTime').val() ? $('#startTime').val() : false
+                })
+            } else {
+                this.setOptions({
+                    minTime: false
+                })
+            }
+        }
     });
 
     $(".datetime-input").datetimepicker({
-        format:'Y-m-d H:i'
+        format: 'Y-m-d H:i'
     });
 
 }
@@ -36,6 +90,9 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
+            if (key === 'dateTime') {
+                value = value.replace('T', ' ').substr(0, 16)
+            }
             form.find("input[name='" + key + "']").val(value);
         });
         $('#editRow').modal();
@@ -110,11 +167,11 @@ function renderDeleteBtn(data, type, row) {
     }
 }
 
-function getLocale(){
-    var lang = navigator.language
-    if(supportedLang.includes(lang)) {
-        return 'resources/i18n/'+lang+'.json'
-    }else {
+function getLocale() {
+    var lang = navigator.language;
+    if (supportedLang.includes(lang)) {
+        return 'resources/i18n/' + lang + '.json'
+    } else {
         return 'resources/i18n/en-US.json'
     }
 }

@@ -43,6 +43,6 @@ public class MealsUtil {
     }
 
     public static Meal createNewFromTo(MealUpdateTo mealTo) {
-        return new Meal(mealTo.getDateTime(),mealTo.getDescription(),mealTo.getCalories());
-    }
+        return new Meal(mealTo.getId(), mealTo.getDateTime(),mealTo.getDescription(),mealTo.getCalories());
+}
 }
