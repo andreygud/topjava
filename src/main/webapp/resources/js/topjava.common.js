@@ -8,7 +8,26 @@ function makeEditable(ctx) {
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
-    $.ajaxSetup({cache: false});
+    $.ajaxSetup({
+        cache: false,
+        converters: {
+            "text json": function (stringData) {
+                var json = JSON.parse(stringData);
+                if (json instanceof Array) {
+                    jQuery.each(json, function () {
+                        if (this.dateTime) {
+                            this.dateTime = this.dateTime.replace('T', ' ');
+                        }
+                    })
+                } else {
+                    if (json.dateTime) {
+                        json.dateTime = json.dateTime.replace('T', ' ');
+                    }
+                }
+                return json;
+            }
+        }
+    });
 
     $("#startDate").datetimepicker({
         timepicker: false,
@@ -90,9 +109,6 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            if (key === 'dateTime') {
-                value = value.replace('T', ' ').substr(0, 16)
-            }
             form.find("input[name='" + key + "']").val(value);
         });
         $('#editRow').modal();
