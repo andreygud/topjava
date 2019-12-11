@@ -59,29 +59,3 @@ $(function () {
         updateTable: updateFilteredTable
     });
 });
-
-/*function save() {
-    $.ajax({
-        type: "POST",
-        url: context.ajaxUrl,
-        data: {
-            id:$("#id").val(),
-            dateTime: getDateTime(),
-            description: $("#description").val(),
-            calories: $("#calories").val()
-        }
-    }).done(function () {
-        $("#editRow").modal("hide");
-        context.updateTable();
-        successNoty("common.saved");
-    });
-}
-
-function getDateTime() {
-    var dateField = $("#dateTime");
-    if (dateField.val() === "") {
-        return ""
-    } else {
-        return dateField.val().replace(' ','T')
-    }
-}*/
