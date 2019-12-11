@@ -13,17 +13,11 @@ function makeEditable(ctx) {
         converters: {
             "text json": function (stringData) {
                 var json = JSON.parse(stringData);
-                if (json instanceof Array) {
-                    jQuery.each(json, function () {
-                        if (this.dateTime) {
-                            this.dateTime = this.dateTime.replace('T', ' ');
-                        }
-                    })
-                } else {
-                    if (json.dateTime) {
-                        json.dateTime = json.dateTime.replace('T', ' ');
+                $(json).each(function () {
+                    if (this.dateTime) {
+                        this.dateTime = this.dateTime.replace('T', ' ').substr(0, 16);
                     }
-                }
+                });
                 return json;
             }
         }

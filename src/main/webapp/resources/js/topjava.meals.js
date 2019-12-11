@@ -60,7 +60,7 @@ $(function () {
     });
 });
 
-function save() {
+/*function save() {
     $.ajax({
         type: "POST",
         url: context.ajaxUrl,
@@ -84,4 +84,4 @@ function getDateTime() {
     } else {
         return dateField.val().replace(' ','T')
     }
-}
+}*/
