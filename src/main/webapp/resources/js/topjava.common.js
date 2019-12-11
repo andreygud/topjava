@@ -9,18 +9,7 @@ function makeEditable(ctx) {
 
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({
-        cache: false,
-        converters: {
-            "text json": function (stringData) {
-                var json = JSON.parse(stringData);
-                $(json).each(function () {
-                    if (this.dateTime) {
-                        this.dateTime = this.dateTime.replace('T', ' ').substr(0, 16);
-                    }
-                });
-                return json;
-            }
-        }
+        cache: false
     });
 }
 
