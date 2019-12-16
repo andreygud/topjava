@@ -101,6 +101,10 @@ abstract public class AbstractControllerTest {
         return wrap(MockMvcRequestBuilders.put(url + "{id}", id));
     }
 
+    protected RequestWrapper doPost(String pad) throws Exception {
+        return wrap(MockMvcRequestBuilders.post(url + pad));
+    }
+
     protected RequestWrapper doPost() {
         return wrap(MockMvcRequestBuilders.post(url));
     }
@@ -126,6 +130,11 @@ abstract public class AbstractControllerTest {
 
         public <T> RequestWrapper jsonBody(T body) {
             builder.contentType(MediaType.APPLICATION_JSON).content(JsonUtil.writeValue(body));
+            return this;
+        }
+
+        public RequestWrapper jsonUserWithPassword(User user) {
+            builder.contentType(MediaType.APPLICATION_JSON).content(JsonUtil.writeAdditionProps(user, "password", user.getPassword()));
             return this;
         }
 

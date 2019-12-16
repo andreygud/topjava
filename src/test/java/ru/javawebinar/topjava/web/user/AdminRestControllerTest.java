@@ -38,6 +38,13 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        perform(doGet(1).basicAuth(ADMIN))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
     void getByEmail() throws Exception {
         perform(doGet("by?email={email}", ADMIN.getEmail()).basicAuth(ADMIN))
                 .andExpect(status().isOk())
@@ -51,6 +58,13 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> userService.get(USER_ID));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(doDelete(1).basicAuth(ADMIN))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
     }
 
     @Test
@@ -77,7 +91,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void createWithLocation() throws Exception {
         User newUser = UserTestData.getNew();
-        ResultActions action = perform(doPost().jsonBody(newUser).basicAuth(ADMIN))
+        ResultActions action = perform(doPost().jsonUserWithPassword(newUser).basicAuth(ADMIN))
                 .andExpect(status().isCreated());
 
         User created = TestUtil.readFromJson(action, User.class);
