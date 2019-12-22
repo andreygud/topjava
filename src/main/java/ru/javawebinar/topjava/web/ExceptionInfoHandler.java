@@ -7,6 +7,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +22,8 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -50,6 +55,19 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(Exception.class)
     public ErrorInfo handleError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
+    }
+
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(BindException.class)
+    public ErrorInfo hadlePostParametersValidationException(HttpServletRequest req, BindingResult result){
+        return logAndGetValidationInfo(req,result);
+    }
+
+    private ErrorInfo logAndGetValidationInfo(HttpServletRequest req, BindingResult bindingResult) {
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        String[] str = errors.stream().map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage())).toArray(String[]::new);
+        log.debug("Validation errors {}", Arrays.toString(str));
+        return new ErrorInfo(req.getRequestURL(), VALIDATION_ERROR, str);
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
