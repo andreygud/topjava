@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.VALIDATIONS_RESPONSE_BODY;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
 import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
 import static ru.javawebinar.topjava.UserTestData.*;
@@ -113,5 +114,23 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(doGet("filter?startDate=&endTime=").basicAuth(USER))
                 .andExpect(status().isOk())
                 .andExpect(MEAL_TO_MATCHERS.contentJson(getTos(MEALS, USER.getCaloriesPerDay())));
+    }
+
+    @Test
+    void update_invalidBody() throws Exception {
+        perform(doPut(MEAL1_ID).jsonBody(UPDATE_MEAL_INVALID_DATE_CALORIES_AND_DESCRIPTION).basicAuth(USER))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(VALIDATIONS_RESPONSE_BODY));
+    }
+
+    @Test
+    void create_invalidBody() throws Exception {
+        perform(doPost().jsonBody(CREATE_MEAL_INVALID_DATE_CALORIES_AND_DESCRIPTION).basicAuth(USER))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(VALIDATIONS_RESPONSE_BODY));
     }
 }

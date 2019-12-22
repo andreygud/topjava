@@ -23,6 +23,10 @@ public class MealTestData {
     public static final Meal ADMIN_MEAL1 = new Meal(ADMIN_MEAL_ID, of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510);
     public static final Meal ADMIN_MEAL2 = new Meal(ADMIN_MEAL_ID + 1, of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
 
+    public static final String VALIDATIONS_RESPONSE_BODY = "{\"type\":\"VALIDATION_ERROR\",\"details\":[\"[calories] must be between 10 and 5000\",\"[dateTime] must not be null\",\"[description] size must be between 2 and 120\"]}";
+    public static final Meal UPDATE_MEAL_INVALID_DATE_CALORIES_AND_DESCRIPTION = new Meal(MEAL1_ID, null, "О", 2);
+    public static final Meal CREATE_MEAL_INVALID_DATE_CALORIES_AND_DESCRIPTION = new Meal(null, "О", 2);
+
     public static final List<Meal> MEALS = List.of(MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
 
     public static Meal getNew() {

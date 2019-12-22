@@ -82,7 +82,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         User updated = UserTestData.getUpdated();
-        perform(doPut(USER_ID).jsonBody(updated).basicAuth(ADMIN))
+        perform(doPut(USER_ID).jsonUserWithPassword(updated).basicAuth(ADMIN))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
         USER_MATCHERS.assertMatch(userService.get(USER_ID), updated);
@@ -118,5 +119,23 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertFalse(userService.get(USER_ID).isEnabled());
+    }
+
+    @Test
+    void update_invalidBody() throws Exception {
+        perform(doPut(USER_ID).jsonUserWithPassword(UPDATE_USER_INVALID_NAME_EMAIL_PASS_CALORIES).basicAuth(ADMIN))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(VALIDATIONS_RESPONSE_BODY));
+    }
+
+    @Test
+    void create_invalidBody() throws Exception {
+        perform(doPost().jsonUserWithPassword(CREATE_USER_INVALID_NAME_EMAIL_PASS_CALORIES).basicAuth(ADMIN))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(VALIDATIONS_RESPONSE_BODY));
     }
 }
